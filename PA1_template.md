@@ -7,7 +7,8 @@ output: html_document
 
 We start off by reading and processing the data:
 
-```{r ReadData}
+
+```r
 ## Read the csv file to a data frame
 activity <- read.csv("activity.csv")
 ```
@@ -17,7 +18,8 @@ activity <- read.csv("activity.csv")
 Now we need to calculate the mean and the median of the steps taken per day.
 Also we present a histogram with this information.
 
-```{r StepsPerDay}
+
+```r
 ## Make aggregation on steps for each date
 stepsPerDay <- aggregate(activity$steps ~ activity$date, FUN = sum, na.action = na.omit)
 names(stepsPerDay) <- c("Date", "steps")
@@ -31,13 +33,16 @@ stepsPerDayMedian <- median(stepsPerDay$steps)
 hist (stepsPerDay$steps, freq = TRUE, main = "Total steps per day", xlab = "Steps", col = "grey")
 ```
 
-The mean of the steps taken per day is **`r stepsPerDayMean`** and the median is **`r stepsPerDayMedian`**.  
+![plot of chunk StepsPerDay](figure/StepsPerDay.png) 
+
+The mean of the steps taken per day is **10766** and the median is **10765**.  
 
 ##What is the average daily activity pattern?
 
 We need to find out at what interval during the day the highest number of steps are taken. We also present the average movements during the day in a plot.
 
-```{r DailyActivity}
+
+```r
 ## Aggregate on steps and invervals
 activityPerDay <- aggregate(activity$steps, by = list( activity$interval), FUN = mean, na.rm = TRUE)
 names(activityPerDay) <- c("interval", "steps")
@@ -51,13 +56,16 @@ maxIntervalValue <- round(activityPerDay[which.max(activityPerDay$steps),"steps"
 plot(activityPerDay$interval, activityPerDay$steps, type = "l", main = "Average Daily Frequency per inteval", xlab= "Interval", ylab = "Steps")
 ```
 
-The maximum interval is **`r maxInterval`** with on average **`r maxIntervalValue`** steps.
+![plot of chunk DailyActivity](figure/DailyActivity.png) 
+
+The maximum interval is **835** with on average **206** steps.
 
 ##Imputing missing values
 
 The missing values will be imputed by making them reflect the average of the interval.
 
-```{r Imputing}
+
+```r
 ## Count rows with NA
 nNaRows <- nrow(activity[is.na(activity$steps == TRUE),])
 
@@ -86,13 +94,16 @@ stepsPerDayFixedMedian <- as.integer(median(stepsPerDayFixed$steps))
 hist (stepsPerDayFixed$steps, freq = TRUE, main = "Total steps per day - imputed", xlab = "Steps", col = "grey")
 ```
 
-Total number or rows with NA is **`r nNaRows`**.
+![plot of chunk Imputing](figure/Imputing.png) 
 
-The mean of the steps taken per day is **`r stepsPerDayFixedMean`** and the median is **`r stepsPerDayFixedMedian`**.  
+Total number or rows with NA is **2304**.
+
+The mean of the steps taken per day is **10766** and the median is **10766**.  
 
 ##Are there differences in activity patterns between weekdays and weekends?
 
-```{r WeekDays}
+
+```r
 ##Loading lattice for use in our graph
 library(lattice)
 
@@ -116,6 +127,8 @@ names(stepsPerTypeOfDay) <- c("interval", "typeOfDay", "steps")
 #Plot
 xyplot(stepsPerTypeOfDay$steps ~stepsPerTypeOfDay$interval | stepsPerTypeOfDay$typeOfDay, type = "l", main = "Average steps per interval divided by type of day", xlab = "Interval", ylab = "Steps")
 ```
+
+![plot of chunk WeekDays](figure/WeekDays.png) 
 
 
 
